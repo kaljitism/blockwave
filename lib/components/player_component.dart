@@ -1,6 +1,7 @@
 import 'package:blockwave/global/global_game_reference.dart';
 import 'package:blockwave/global/player_data.dart';
 import 'package:blockwave/global/world_data.dart';
+import 'package:blockwave/utils/game_methods.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/flame.dart';
@@ -8,10 +9,12 @@ import 'package:flame/sprite.dart';
 
 class PlayerComponent extends SpriteAnimationComponent {
   final Vector2 playerSize = Vector2.all(60);
-  final double playerSpeed = 1;
+  final double playerSpeed = 2.5;
   final double stepTime = 0.2;
   bool isFacingRight = true;
   final Vector2 playerInitialPosition = Vector2(100, 400);
+  final playerPriority = 100;
+  final anchorValue = Anchor.bottomCenter;
 
   late SpriteSheet playerWalkingSpriteSheet;
   late SpriteSheet playerIdleSpriteSheet;
@@ -26,6 +29,8 @@ class PlayerComponent extends SpriteAnimationComponent {
     super.onLoad();
 
     position = playerInitialPosition;
+    priority = playerPriority;
+    anchor = anchorValue;
 
     Future<Image> idle =
         Flame.images.load('sprite_sheets/player/player_idle_sprite_sheet.png');
@@ -43,6 +48,12 @@ class PlayerComponent extends SpriteAnimationComponent {
   void update(dt) {
     super.update(dt);
     movementLogic();
+  }
+
+  @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    size = GameMethods.instance.blockSize;
   }
 
   void movementLogic() {

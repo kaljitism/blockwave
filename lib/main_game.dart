@@ -3,6 +3,8 @@ import 'package:blockwave/components/player_component.dart';
 import 'package:blockwave/global/global_game_reference.dart';
 import 'package:blockwave/global/world_data.dart';
 import 'package:blockwave/resources/block.dart';
+import 'package:blockwave/utils/chunk_generation_methods.dart';
+import 'package:flame/camera.dart';
 import 'package:flame/game.dart';
 import 'package:get/get.dart';
 
@@ -15,10 +17,33 @@ class MainGame extends FlameGame {
     globalGameReference.gameReference = this;
   }
 
+  final World gameWorld = World();
+
   @override
   Future<void> onLoad() async {
     super.onLoad();
     await add(playerComponent);
-    add(BlockComponent(block: Blocks.grass));
+
+    await add(gameWorld);
+    gameWorld.add(playerComponent);
+    renderChunk(ChunkGenerationMethods.instance.generateChunk());
+    final gameCamera = CameraComponent(world: gameWorld);
+    await add(gameCamera);
+    gameCamera.follow(playerComponent);
+  }
+
+  void renderChunk(List<List<Blocks?>> blocks) {
+    blocks.asMap().forEach((yIndex, rowOfBlocks) {
+      rowOfBlocks.asMap().forEach((xIndex, block) {
+        if (block != null) {
+          final component = BlockComponent(
+            block: block,
+            blockIndex: Vector2(xIndex.toDouble(), yIndex.toDouble()),
+          );
+          add(component);
+          gameWorld.add(component);
+        }
+      });
+    });
   }
 }
