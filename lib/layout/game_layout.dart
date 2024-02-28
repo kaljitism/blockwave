@@ -1,3 +1,4 @@
+import 'package:blockwave/global/world_data.dart';
 import 'package:blockwave/layout/controller_widget.dart';
 import 'package:blockwave/main_game.dart';
 import 'package:flame/game.dart';
@@ -10,7 +11,7 @@ class GameLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        GameWidget(game: MainGame()),
+        GameWidget(game: MainGame(worldData: WorldData())),
         const ControllerWidget(),
       ],
     );

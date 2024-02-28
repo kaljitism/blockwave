@@ -1,3 +1,5 @@
+import 'package:blockwave/global/global_game_reference.dart';
+import 'package:blockwave/global/player_data.dart';
 import 'package:flutter/material.dart';
 
 class ControllerButtonWidget extends StatefulWidget {
@@ -33,11 +35,15 @@ class _ControllerButtonWidgetState extends State<ControllerButtonWidget> {
         onTapUp: (_) {
           setState(() {
             onPressed = false;
+            GlobalGameReference.instance.gameReference.worldData.playerData
+                .componentMotionState = ComponentMotionState.idle;
           });
         },
         onTapCancel: () {
           setState(() {
             onPressed = false;
+            GlobalGameReference.instance.gameReference.worldData.playerData
+                .componentMotionState = ComponentMotionState.idle;
           });
         },
         child: Opacity(
