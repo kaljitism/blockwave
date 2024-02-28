@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
   flame: ^1.15.0
   get: ^4.6.6
+  fast_noise: ^2.0.0
 
 dev_dependencies:
   flutter_test:

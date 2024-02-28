@@ -12,7 +12,7 @@ class PlayerComponent extends SpriteAnimationComponent {
   final double playerSpeed = 2.5;
   final double stepTime = 0.2;
   bool isFacingRight = true;
-  final Vector2 playerInitialPosition = Vector2(100, 400);
+  final Vector2 playerInitialPosition = Vector2(100, 700);
   final playerPriority = 100;
   final anchorValue = Anchor.bottomCenter;
 
