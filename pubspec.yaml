@@ -1,0 +1,40 @@
+name: blockwave
+description: "A 2-D World Building Game"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0-244.0.dev <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flame: ^1.15.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/controller/
+    - assets/fonts/
+    - assets/images/gui/
+    - assets/images/inventory/
+    - assets/images/launcher/
+    - assets/images/parallax/evening/
+    - assets/images/parallax/morning/
+    - assets/images/parallax/night/
+    - assets/images/sprite_sheets/blocks/
+    - assets/images/sprite_sheets/item/
+    - assets/images/sprite_sheets/mobs/
+    - assets/images/sprite_sheets/player/
+
+  fonts:
+    - family: MinecraftFont
+      fonts:
+        - asset: assets/fonts/minecraft_font.ttf
