@@ -1,2 +1,2 @@
-const chunkWidth = 16;
-const chunkHeight = 25;
+const chunkWidth = 32;
+const chunkHeight = 50;

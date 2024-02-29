@@ -12,7 +12,7 @@ class PlayerComponent extends SpriteAnimationComponent {
   final double playerSpeed = 2.5;
   final double stepTime = 0.2;
   bool isFacingRight = true;
-  final Vector2 playerInitialPosition = Vector2(100, 700);
+  final Vector2 playerInitialPosition = Vector2(100, 900);
   final playerPriority = 100;
   final anchorValue = Anchor.bottomCenter;
 
@@ -51,9 +51,9 @@ class PlayerComponent extends SpriteAnimationComponent {
   }
 
   @override
-  void onGameResize(Vector2 size) {
-    super.onGameResize(size);
-    size = GameMethods.instance.blockSize;
+  void onGameResize(Vector2 newGameSize) {
+    super.onGameResize(newGameSize);
+    size = GameMethods.instance.blockSize * 2;
   }
 
   void movementLogic() {
