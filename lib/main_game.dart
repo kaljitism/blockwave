@@ -26,6 +26,7 @@ class MainGame extends FlameGame {
 
     await add(gameWorld);
     gameWorld.add(playerComponent);
+
     renderChunk(ChunkGenerationMethods.instance.generateChunk());
     final gameCamera = CameraComponent(world: gameWorld);
     await add(gameCamera);

@@ -1,3 +1,5 @@
+import 'dart:core';
+
 enum Blocks {
   grass,
   dirt,
@@ -21,4 +23,25 @@ enum Blocks {
   craftingTable,
   cobblestone,
   bedrock,
+  water,
 }
+
+List<Blocks> oreList = [
+  Blocks.coalOre,
+  Blocks.ironOre,
+  Blocks.diamondOre,
+  Blocks.goldOre,
+];
+
+List<Blocks> floraList = [
+  Blocks.birchLog,
+  Blocks.birchLeaf,
+  Blocks.cactus,
+  Blocks.deadBush,
+  Blocks.grassPlant,
+  Blocks.redFlower,
+  Blocks.purpleFlower,
+  Blocks.drippingWhiteFlower,
+  Blocks.yellowFlower,
+  Blocks.whiteFlower,
+];
