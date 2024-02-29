@@ -1,2 +1,2 @@
-const chunkWidth = 132;
+const chunkWidth = 20;
 const chunkHeight = 50;
