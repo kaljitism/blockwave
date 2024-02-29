@@ -9,7 +9,7 @@ import 'package:flame/sprite.dart';
 
 class PlayerComponent extends SpriteAnimationComponent {
   final Vector2 playerSize = Vector2.all(60);
-  final double playerSpeed = 2.5;
+  final double playerSpeed = 10;
   final double stepTime = 0.2;
   bool isFacingRight = true;
   final Vector2 playerInitialPosition = Vector2(100, 900);
