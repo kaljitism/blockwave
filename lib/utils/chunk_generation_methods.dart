@@ -1,6 +1,8 @@
 import 'dart:math';
 
-import 'package:blockwave/resources/block.dart';
+import 'package:blockwave/global/global_game_reference.dart';
+import 'package:blockwave/resources/biomes.dart';
+import 'package:blockwave/resources/blocks.dart';
 import 'package:blockwave/utils/constants.dart';
 import 'package:blockwave/utils/game_methods.dart';
 import 'package:fast_noise/fast_noise.dart';
@@ -19,39 +21,48 @@ class ChunkGenerationMethods {
     );
   }
 
-  List<List<Blocks?>> generateChunk() {
+  List<List<Blocks?>> generateChunk(int chunkIndex) {
+    Biomes biome = Random().nextBool() ? Biomes.desert : Biomes.birchForest;
+
     List<List<Blocks?>> chunk = generateNullChunk();
 
-    List<List<double>> rawNoise =
-        noise2(chunkWidth, 1, noiseType: NoiseType.perlin, frequency: 0.05);
+    List<List<double>> rawNoise = noise2(chunkWidth * (chunkIndex + 1), 1,
+        noiseType: NoiseType.perlin,
+        frequency: 0.05,
+        seed: GlobalGameReference.instance.gameReference.worldData.seed);
 
     List<int> yValues = getYValueFromRawNoise(rawNoise);
+    yValues.removeRange(0, chunkWidth * chunkIndex);
 
-    chunk = generatePrimarySoil(chunk, yValues, Blocks.grass);
-    chunk = generateSecondarySoil(chunk, yValues, Blocks.dirt);
+    chunk = generatePrimarySoil(chunk, yValues, biome);
+    chunk = generateSecondarySoil(chunk, yValues, biome);
     chunk = generateBedRock(chunk, Blocks.stone);
     chunk = generateOre(chunk, oreList);
-    chunk = generateFlora(chunk, yValues, floraList);
-    chunk = generateWater(chunk, yValues);
+    biome == Biomes.desert
+        ? Intent.doNothing
+        : chunk = generateFlora(chunk, yValues, floraList);
+    biome == Biomes.desert
+        ? Intent.doNothing
+        : chunk = generateWater(chunk, yValues);
 
     return chunk;
   }
 
   List<List<Blocks?>> generatePrimarySoil(
-      List<List<Blocks?>> chunk, List<int> yValues, Blocks block) {
+      List<List<Blocks?>> chunk, List<int> yValues, Biomes biome) {
     yValues.asMap().forEach((int index, int value) {
-      chunk[value][index] = block;
+      chunk[value][index] = BiomeData.getBiomeDataFor(biome).primarySoil;
     });
     return chunk;
   }
 
   List<List<Blocks?>> generateSecondarySoil(
-      List<List<Blocks?>> chunk, List<int> yValues, Blocks block) {
+      List<List<Blocks?>> chunk, List<int> yValues, Biomes biome) {
     final int maxSecondarySoilExtent =
         GameMethods.instance.secondarySoilMaxExtent;
     yValues.asMap().forEach((int index, int value) {
       for (int i = value + 1; i <= maxSecondarySoilExtent; i++) {
-        chunk[i][index] = block;
+        chunk[i][index] = BiomeData.getBiomeDataFor(biome).secondarySoil;
       }
     });
     return chunk;

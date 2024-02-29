@@ -1,4 +1,4 @@
-import 'package:blockwave/resources/block.dart';
+import 'package:blockwave/resources/blocks.dart';
 import 'package:blockwave/utils/game_methods.dart';
 import 'package:flame/components.dart';
 
