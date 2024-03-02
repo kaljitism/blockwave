@@ -26,13 +26,23 @@ class ChunkGenerationMethods {
 
     List<List<Blocks?>> chunk = generateNullChunk();
 
-    List<List<double>> rawNoise = noise2(chunkWidth * (chunkIndex + 1), 1,
-        noiseType: NoiseType.perlin,
-        frequency: 0.05,
-        seed: GlobalGameReference.instance.gameReference.worldData.seed);
+    List<List<double>> rawNoise = noise2(
+      chunkIndex >= 0
+          ? chunkWidth * (chunkIndex + 1)
+          : chunkWidth * (chunkIndex.abs()),
+      1,
+      noiseType: NoiseType.perlin,
+      frequency: 0.05,
+      seed: !chunkIndex.isNegative
+          ? GlobalGameReference.instance.gameReference.worldData.seed
+          : GlobalGameReference.instance.gameReference.worldData.seed + 1,
+    );
 
     List<int> yValues = getYValueFromRawNoise(rawNoise);
-    yValues.removeRange(0, chunkWidth * chunkIndex);
+
+    chunkIndex >= 0
+        ? yValues.removeRange(0, chunkWidth * chunkIndex)
+        : yValues.removeRange(0, chunkWidth * (chunkIndex.abs() - 1));
 
     chunk = generatePrimarySoil(chunk, yValues, biome);
     chunk = generateSecondarySoil(chunk, yValues, biome);

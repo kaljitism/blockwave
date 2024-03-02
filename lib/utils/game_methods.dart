@@ -2,6 +2,7 @@ import 'package:blockwave/global/global_game_reference.dart';
 import 'package:blockwave/resources/blocks.dart';
 import 'package:blockwave/utils/constants.dart';
 import 'package:flame/components.dart';
+import 'package:flame/extensions.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +15,12 @@ class GameMethods {
   Vector2 get blockSize {
     // return Vector2.all(screenSize().width / chunkWidth);
     return Vector2.all(30);
+  }
+
+  double get playerXIndexPosition {
+    return GlobalGameReference
+            .instance.gameReference.playerComponent.position.x /
+        blockSize.x;
   }
 
   int get freeArea {
@@ -44,22 +51,53 @@ class GameMethods {
     return sprite;
   }
 
-  void addToRightWorldChunks(List<List<Blocks?>> chunk) {
-    chunk.asMap().forEach((int yIndex, List<Blocks?> value) {
-      GlobalGameReference
-          .instance.gameReference.worldData.rightWorldChunks[yIndex]
-          .addAll(value);
-    });
+  void addToWorldChunks({
+    required List<List<Blocks?>> chunk,
+    required bool isInRightWorld,
+  }) {
+    if (isInRightWorld) {
+      chunk.asMap().forEach((int yIndex, List<Blocks?> rowOfBlocks) {
+        GlobalGameReference
+            .instance.gameReference.worldData.rightWorldChunks[yIndex]
+            .addAll(rowOfBlocks);
+      });
+    } else {
+      chunk.asMap().forEach((int yIndex, List<Blocks?> rowOfBlocks) {
+        GlobalGameReference
+            .instance.gameReference.worldData.leftWorldChunks[yIndex]
+            .addAll(rowOfBlocks);
+      });
+    }
   }
 
-  List<List<Blocks?>> getChunk(int chunkIndex) {
-    List<List<Blocks?>> chunk = [];
-    GlobalGameReference.instance.gameReference.worldData.rightWorldChunks
-        .asMap()
-        .forEach((int index, List<Blocks?> rowOfBlocks) {
-      chunk.add(rowOfBlocks.sublist(
-          chunkWidth * chunkIndex, chunkWidth * (chunkIndex + 1)));
-    });
+  List<List<Blocks?>>? getChunk(int chunkIndex) {
+    List<List<Blocks?>>? chunk = [];
+    if (chunkIndex >= 0) {
+      GlobalGameReference.instance.gameReference.worldData.rightWorldChunks
+          .asMap()
+          .forEach((int index, List<Blocks?> rowOfBlocks) {
+        chunk.add(
+          rowOfBlocks.sublist(
+            chunkWidth * chunkIndex,
+            chunkWidth * (chunkIndex + 1),
+          ),
+        );
+      });
+    } else {
+      GlobalGameReference.instance.gameReference.worldData.leftWorldChunks
+          .asMap()
+          .forEach((int index, List<Blocks?> rowOfBlocks) {
+        chunk.add(
+          rowOfBlocks
+              .sublist(
+                chunkWidth * (chunkIndex.abs() - 1),
+                chunkWidth * (chunkIndex.abs()),
+              )
+              .reversed
+              .toList(),
+        );
+      });
+    }
     return chunk;
   }
 }
