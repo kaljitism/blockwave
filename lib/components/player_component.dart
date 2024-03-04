@@ -1,16 +1,16 @@
 import 'package:blockwave/global/global_game_reference.dart';
 import 'package:blockwave/global/player_data.dart';
 import 'package:blockwave/global/world_data.dart';
-import 'package:blockwave/utils/game_methods.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
 
 class PlayerComponent extends SpriteAnimationComponent {
-  final Vector2 playerSize = Vector2.all(60);
-  final double playerSpeed = 10;
-  final double stepTime = 0.2;
+  final Vector2 playerSize = Vector2(56, 95);
+  final double playerSpeed = 5;
+  final double idleStepTime = 0.5;
+  final double walkingStepTime = 0.05;
   bool isFacingRight = true;
   final Vector2 playerInitialPosition = Vector2(100, 900);
   final playerPriority = 100;
@@ -20,9 +20,9 @@ class PlayerComponent extends SpriteAnimationComponent {
   late SpriteSheet playerIdleSpriteSheet;
 
   late SpriteAnimation idleAnimation =
-      playerIdleSpriteSheet.createAnimation(row: 0, stepTime: stepTime);
-  late SpriteAnimation walkingAnimation =
-      playerWalkingSpriteSheet.createAnimation(row: 0, stepTime: stepTime);
+      playerIdleSpriteSheet.createAnimation(row: 0, stepTime: idleStepTime);
+  late SpriteAnimation walkingAnimation = playerWalkingSpriteSheet
+      .createAnimation(row: 0, stepTime: walkingStepTime);
 
   @override
   Future<void> onLoad() async {
@@ -33,9 +33,9 @@ class PlayerComponent extends SpriteAnimationComponent {
     anchor = anchorValue;
 
     Future<Image> idle =
-        Flame.images.load('sprite_sheets/player/player_idle_sprite_sheet.png');
-    Future<Image> walking = Flame.images
-        .load('sprite_sheets/player/player_walking_sprite_sheet.png');
+        Flame.images.load('sprite_sheets/player/player_character_idle.png');
+    Future<Image> walking =
+        Flame.images.load('sprite_sheets/player/player_character_walking.png');
 
     playerIdleSpriteSheet = SpriteSheet(image: await idle, srcSize: playerSize);
     playerWalkingSpriteSheet =
@@ -48,12 +48,6 @@ class PlayerComponent extends SpriteAnimationComponent {
   void update(dt) {
     super.update(dt);
     movementLogic();
-  }
-
-  @override
-  void onGameResize(Vector2 newGameSize) {
-    super.onGameResize(newGameSize);
-    size = GameMethods.instance.blockSize * 2;
   }
 
   void movementLogic() {
