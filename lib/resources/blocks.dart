@@ -34,10 +34,6 @@ List<Blocks> oreList = [
 ];
 
 List<Blocks> floraList = [
-  Blocks.birchLog,
-  Blocks.birchLeaf,
-  Blocks.cactus,
-  Blocks.deadBush,
   Blocks.grassPlant,
   Blocks.redFlower,
   Blocks.purpleFlower,

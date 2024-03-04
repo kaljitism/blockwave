@@ -3,11 +3,14 @@ import 'dart:math';
 import 'package:blockwave/global/global_game_reference.dart';
 import 'package:blockwave/resources/biomes.dart';
 import 'package:blockwave/resources/blocks.dart';
+import 'package:blockwave/resources/structures.dart';
 import 'package:blockwave/utils/constants.dart';
 import 'package:blockwave/utils/game_methods.dart';
 import 'package:fast_noise/fast_noise.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/cupertino.dart';
+
+import '../structures/trees.dart';
 
 class ChunkGenerationMethods {
   static ChunkGenerationMethods get instance {
@@ -46,14 +49,16 @@ class ChunkGenerationMethods {
 
     chunk = generatePrimarySoil(chunk, yValues, biome);
     chunk = generateSecondarySoil(chunk, yValues, biome);
+    chunk = generateStructures(chunk, yValues, biome);
     chunk = generateBedRock(chunk, Blocks.stone);
     chunk = generateOre(chunk, oreList);
-    biome == Biomes.desert
-        ? Intent.doNothing
-        : chunk = generateFlora(chunk, yValues, floraList);
-    biome == Biomes.desert
-        ? Intent.doNothing
-        : chunk = generateWater(chunk, yValues);
+    if (biome == Biomes.birchForest) {
+      chunk = generateWater(chunk, yValues);
+      chunk = generateFlora(chunk, yValues, floraList);
+    }
+    if (biome == Biomes.desert) {
+      chunk = generateFlora(chunk, yValues, [Blocks.deadBush]);
+    }
 
     return chunk;
   }
@@ -75,6 +80,38 @@ class ChunkGenerationMethods {
         chunk[i][index] = BiomeData.getBiomeDataFor(biome).secondarySoil;
       }
     });
+    return chunk;
+  }
+
+  List<List<Blocks?>> generateStructures(
+      List<List<Blocks?>> chunk, List<int> yValues, Biomes biome) {
+    BiomeData.getBiomeDataFor(biome)
+        .generatingStructure
+        .asMap()
+        .forEach((key, Structure currentStructure) {
+      List<List<Blocks?>> structureList =
+          List.from(currentStructure.structure.reversed);
+
+      for (int occurrence = 0;
+          occurrence < currentStructure.maxOccurrences;
+          occurrence++) {
+        int xPosition = Random().nextInt((chunkWidth - tree.maxWidth - 1));
+        int yPosition = yValues[xPosition + (structureList.length ~/ 2)] - 1;
+
+        for (int indexOfRow = 0;
+            indexOfRow < currentStructure.maxWidth;
+            indexOfRow++) {
+          List<Blocks?> rowOfBlocksInStructure = structureList[indexOfRow];
+          rowOfBlocksInStructure.asMap().forEach((indexOfColumn, value) {
+            if (chunk[yPosition - indexOfRow][xPosition + indexOfColumn] ==
+                null) {
+              chunk[yPosition - indexOfRow][xPosition + indexOfColumn] = value;
+            }
+          });
+        }
+      }
+    });
+
     return chunk;
   }
 
@@ -127,7 +164,9 @@ class ChunkGenerationMethods {
 
     yValues.asMap().forEach((int index, int value) {
       randomPlaces.contains(index)
-          ? chunk[value - 1][index] = floraList.random()
+          ? chunk[value - 1][index] == null
+              ? chunk[value - 1][index] = floraList.random()
+              : Intent.doNothing
           : Intent.doNothing;
     });
     return chunk;
